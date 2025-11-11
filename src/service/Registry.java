@@ -4,6 +4,7 @@ import model.Card;
 import model.CardType;
 import model.TariffKind;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -52,4 +53,21 @@ public class Registry {
         return Collections.unmodifiableMap(store);
     }
 
+    @SuppressWarnings("unchecked")
+    public void load(String path) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois =
+                     new ObjectInputStream(new BufferedInputStream(new FileInputStream(path)))) {
+            Object obj = ois.readObject();
+            if (!(obj instanceof Map)) throw new IOException("Неправильний формат файлу.");
+            store.clear();
+            store.putAll((Map<String, Card>) obj);
+        }
+    }
+
+    public void save(String path) throws IOException {
+        try (ObjectOutputStream oos =
+                     new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) {
+            oos.writeObject(store);
+        }
+    }
 }

@@ -6,6 +6,7 @@ import model.TariffKind;
 import model.TurnstileStats;
 import service.Registry;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.EnumMap;
 import java.util.Optional;
@@ -82,4 +83,17 @@ public class TurnstileController {
     public Map<String, Card> dumpRegistry() {
         return registry.snapshot();
     }
+
+    public void save(String path) throws IOException {
+        registry.save(path);
+    }
+
+    public void load(String path) throws IOException, ClassNotFoundException {
+        registry.load(path);
+    }
+
+    public Optional<Card> findById(String id) {
+        return registry.readCard(id);
+    }
+
 }

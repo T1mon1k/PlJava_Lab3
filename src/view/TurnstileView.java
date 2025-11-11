@@ -7,6 +7,7 @@ import model.TariffKind;
 
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Optional;
 
 public class TurnstileView {
     private final TurnstileController controller;
@@ -33,6 +34,9 @@ public class TurnstileView {
                 case "2" -> statisticsFlow();
                 case "3" -> listCards();
                 case "4" -> topUpFlow();
+                case "5" -> saveFlow();
+                case "6" -> loadFlow();
+                case "7" -> findFlow();
                 case "0" -> {
                     System.out.println("Вихід... До побачення!");
                     return;
@@ -50,6 +54,9 @@ public class TurnstileView {
                 │ 2. Статистика                                    │
                 │ 3. Перелік усіх карток                           │
                 │ 4. Поповнити накопичувальну (грн)                │
+                │ 5. Зберегти реєстр у файл                        │
+                │ 6. Завантажити реєстр з файлу                    │
+                │ 7. Пошук картки за ID                            │
                 │ 0. Вихід                                         │
                 ╰──────────────────────────────────────────────────╯
                  АБО введіть ID (10 цифр + літера) для проходу:"""
@@ -176,6 +183,42 @@ public class TurnstileView {
             System.out.println(Pretty.formatTopUpResult(id, amount));
         } else {
             System.out.println("Помилка поповнення (перевірте ID і тип картки).");
+        }
+    }
+
+    private void saveFlow() {
+        try {
+            System.out.print("Шлях до файлу (.ser), напр. data.ser: ");
+            String path = sc.nextLine().trim();
+            if (path.isEmpty()) { System.out.println("Скасовано."); return; }
+            controller.save(path);
+            System.out.println("✅ Реєстр збережено у файл: " + path);
+        } catch (Exception e) {
+            System.out.println("Помилка збереження: " + e.getMessage());
+        }
+    }
+
+    private void loadFlow() {
+        try {
+            System.out.print("Шлях до файлу (.ser) для завантаження: ");
+            String path = sc.nextLine().trim();
+            if (path.isEmpty()) { System.out.println("Скасовано."); return; }
+            controller.load(path);
+            System.out.println("✅ Реєстр завантажено з файлу: " + path);
+        } catch (Exception e) {
+            System.out.println("Помилка завантаження: " + e.getMessage());
+        }
+    }
+
+    private void findFlow() {
+        System.out.print("Введіть ID картки для пошуку: ");
+        String id = sc.nextLine().trim();
+        Optional<Card> found = controller.findById(id);
+        if (found.isPresent()) {
+            System.out.println("╭─ Знайдено картку ────────────────────────────────╮");
+            System.out.println(Pretty.cardDetails(found.get()));
+        } else {
+            System.out.println("Картку не знайдено.");
         }
     }
 

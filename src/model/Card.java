@@ -1,10 +1,15 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.security.SecureRandom;
 
-public class Card {
+public class Card implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private static final SecureRandom RND = new SecureRandom();
     private static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
